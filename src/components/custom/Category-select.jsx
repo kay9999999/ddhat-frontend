@@ -22,7 +22,7 @@ export async function CategorySelect() {
           {title}
         </CategoryButton>
       ))}
-      <CategoryButton value="">All</CategoryButton>
+      <CategoryButton value="">all</CategoryButton>
     </div>
   );
 }

@@ -2,56 +2,81 @@
 
 import { useState } from "react";
 import { toast } from "sonner";
+import axios from "axios";
 
-export default function JobApplicationForm({ jobId, jobTitle }) {
+export default function JobApplicationForm({ jobTitle }) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    cv: null,
   });
 
+  const [file, setFile] = useState(null);
+
+  // Handle form inputs
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({ ...prevData, [name]: value }));
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
+  // Handle file upload
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setFormData((prevData) => ({ ...prevData, cv: file }));
+    setFile(e.target.files[0]);
   };
 
+  // Submit form data to Strapi
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const applicationFormData = new FormData();
-      applicationFormData.append("name", formData.name);
-      applicationFormData.append("email", formData.email);
-      applicationFormData.append("phone", formData.phone);
-      applicationFormData.append("job_position", jobId);
-      applicationFormData.append("job_title", jobTitle);
-
-      if (formData.cv) {
-        applicationFormData.append("cv", formData.cv);
-      }
-
-      const response = await fetch("/api/job-application", {
-        method: "POST",
-        body: applicationFormData,
+      toast("Submitting application...", {
+        style: { backgroundColor: "#f0ad4e", color: "white" }, // Optional styling for notification
       });
 
-      if (response.ok) {
-        toast.success("Application submitted successfully!");
-        setFormData({ name: "", email: "", phone: "", cv: null });
-      } else {
-        const errorData = await response.json();
-        console.error("Error response:", errorData);
-        toast.error("Failed to submit the application. Please try again.");
-      }
+      // Step 1: Upload the file to Strapi
+      const fileUploadData = new FormData();
+      fileUploadData.append("files", file);
+
+      const uploadRes = await axios.post(
+        `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/upload`, // Strapi upload endpoint
+        fileUploadData
+      );
+
+      // Step 2: Get uploaded file ID
+      const uploadedFileId = uploadRes.data[0].id;
+
+      // Step 3: Send form data to Strapi
+      const applicationData = {
+        data: {
+          name: formData.name,
+          phone: formData.phone,
+          email: formData.email,
+          cv: uploadedFileId,
+          job_title: jobTitle,
+        },
+      };
+
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/job-applications`,
+        applicationData,
+        { headers: { "Content-Type": "application/json" } }
+      );
+      console.log("Response:", response.data);
+
+      toast.success("Application submitted successfully!");
+
+      // Reset form
+      setFormData({ name: "", phone: "", email: "" });
+      setFile(null);
     } catch (error) {
-      console.error("Error:", error.message);
-      toast.error("An error occurred while submitting the application.");
+      console.error(
+        "Error submitting application:",
+        error.response?.data || error
+      );
+
+      toast.error("Failed to submit application. Please try again.");
     }
   };
 
@@ -70,7 +95,7 @@ export default function JobApplicationForm({ jobId, jobTitle }) {
           value={formData.name}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-1/3 border p-2 rounded"
         />
       </div>
 
@@ -82,7 +107,7 @@ export default function JobApplicationForm({ jobId, jobTitle }) {
           value={formData.email}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-1/3 border p-2 rounded"
         />
       </div>
 
@@ -94,7 +119,7 @@ export default function JobApplicationForm({ jobId, jobTitle }) {
           value={formData.phone}
           onChange={handleChange}
           required
-          className="w-full border p-2 rounded"
+          className="w-1/3 border p-2 rounded"
         />
       </div>
 

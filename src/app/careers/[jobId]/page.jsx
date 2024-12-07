@@ -60,7 +60,7 @@ export default async function JobDetailsPage({ params, searchParams }) {
       </div>
 
       {/* Include the Job Application Form */}
-      <JobApplicationForm jobId={params.jobId} jobTitle={jobTitle} />
+      <JobApplicationForm jobTitle={jobTitle} />
     </div>
   );
 }
