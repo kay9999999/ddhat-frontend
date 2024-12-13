@@ -18,17 +18,31 @@ import {
 } from "react-icons/fa";
 
 const Header = ({ data }) => {
-  if (!data) {
-    return null;
-  }
-
-  const { logo, about, services, work, career, blog, ctaButton } = data;
   const strapiURL = getStrapiURL();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(0);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [dropdownTimer, setDropdownTimer] = useState(null);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setWindowWidth(window.innerWidth);
+      if (window.innerWidth > 1028) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  if (!data) {
+    return null;
+  }
+
+  const { logo, about, services, work, career, blog, ctaButton } = data;
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -47,18 +61,6 @@ const Header = ({ data }) => {
     const timer = setTimeout(() => setIsDropdownOpen(false), 500);
     setDropdownTimer(timer);
   };
-
-  useEffect(() => {
-    const handleResize = () => {
-      setWindowWidth(window.innerWidth);
-      if (window.innerWidth > 1028) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   return (
     <header className="bg-white shadow-md">

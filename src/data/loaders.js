@@ -515,7 +515,7 @@ export async function getCareerData() {
   });
 
   try {
-    const response = await fetch(url.href, { cache: "no-store" });
+    const response = await fetch(url.href);
     const data = await response.json();
     return data;
   } catch (error) {

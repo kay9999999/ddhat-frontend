@@ -4,6 +4,8 @@ import { getStrapiURL } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 
+export const dynamic = "force-dynamic";
+
 export async function generateMetadata() {
   return {
     title: "Career Opportunities",
@@ -77,7 +79,7 @@ export default async function CareersPage() {
       {/* Job Listings Section */}
       <div>
         {jobPositions.length > 0 ? (
-          <div className="space-y-8">
+          <div className="space-y-8 mb-16">
             {jobPositions.map((job) => (
               <div
                 key={job.id}

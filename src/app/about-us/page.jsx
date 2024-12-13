@@ -34,7 +34,7 @@ const About = () => {
             profiles and presentations, E-commerce, maintenance, and software
             consultancy. Our main goal is to keep high-quality standards for our
             projects, in design, hosting, consulting services, and any other
-            solution that solves our customers' needs and specifications.
+            solution that solves our customer needs and specifications.
             <br />
             <br />
             Our programmers are highly skilled in the latest web design and

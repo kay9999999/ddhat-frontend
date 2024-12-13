@@ -1,10 +1,12 @@
 import JobApplicationForm from "@/components/custom/JobApplicationForm";
 
+export const dynamic = "force-dynamic";
+
 async function getJobDetails(jobId) {
   const url = `${process.env.NEXT_PUBLIC_STRAPI_API_URL}/api/job-positions?filters[id][$eq]=${jobId}&fields[0]=info`;
 
   try {
-    const response = await fetch(url, { cache: "no-store" });
+    const response = await fetch(url);
     if (!response.ok) throw new Error("Failed to fetch job details");
 
     const data = await response.json();
