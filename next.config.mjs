@@ -6,10 +6,9 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "http",
-        hostname: "localhost",
-        port: "1337",
-        pathname: "/uploads/**/*",
+        protocol: "https",
+        hostname: "admin.ddhat.com",
+        pathname: "/uploads/**",
       },
       {
         protocol: "https",
